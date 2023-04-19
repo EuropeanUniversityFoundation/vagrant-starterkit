@@ -2,4 +2,4 @@
 .env
 
 # Ignore Vagrant specific directories.
-./vagrant
+.vagrant
