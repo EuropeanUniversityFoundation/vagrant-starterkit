@@ -33,4 +33,10 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/vagrant", disabled: true
   config.vm.synced_folder ".", "/home/vagrant/vagrant-root", type: "rsync"
 
+  # Basic provisioning for testing purposes.
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get update
+    apt-get install -y apache2
+  SHELL
+
 end
