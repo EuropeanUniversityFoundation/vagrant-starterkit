@@ -16,8 +16,12 @@ Vagrant.configure("2") do |config|
 
   # Overrides for the libvirt provider.
   config.vm.provider :libvirt do |v, override|
-    v.storage_pool_name = ENV['LIBVIRT_STORAGE_POOL'] || "default"
+    # Hardware limits.
     v.memory = ENV['LIBVIRT_MEMORY'].to_i || 2048
     v.cpus = ENV['LIBVIRT_CPUS'].to_i || 2
+
+    # Libvirt housekeeping.
+    v.storage_pool_name = ENV['LIBVIRT_STORAGE_POOL'] || "default"
+    v.default_prefix = ENV['LIBVIRT_DEFAULT_PREFIX'] || "starterkit_"
   end
 end
