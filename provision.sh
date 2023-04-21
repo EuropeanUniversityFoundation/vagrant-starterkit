@@ -5,5 +5,11 @@ apt-get update
 apt-get upgrade -y
 apt-get dist-upgrade -y
 
-# Install Apache2 web server for quick testing.
-apt-get install apache2 -y
+# Load environment file if it exists.
+if [[ -f /home/vagrant/vagrant-root/.env ]]; then
+  source /home/vagrant/vagrant-root/.env
+  echo -e "Loaded local environment file for ${VM_HOSTNAME:-default}."
+else
+  echo "ERROR: .env not found!"
+  exit 1
+fi
