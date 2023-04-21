@@ -13,3 +13,6 @@ else
   echo "ERROR: .env not found!"
   exit 1
 fi
+
+# Bash setup.
+if [[ ! -z ${BASH_SETUP} ]]; then source ${BASH_SETUP}; fi
