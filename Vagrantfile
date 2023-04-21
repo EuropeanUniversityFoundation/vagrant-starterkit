@@ -24,4 +24,9 @@ Vagrant.configure("2") do |config|
     v.storage_pool_name = ENV['LIBVIRT_STORAGE_POOL'] || "default"
     v.default_prefix = ENV['LIBVIRT_DEFAULT_PREFIX'] || "starterkit_"
   end
+
+  # Network definitions.
+  if ENV['VM_IPV4']
+    config.vm.network :private_network, :ip => ENV['VM_IPV4']
+  end
 end
