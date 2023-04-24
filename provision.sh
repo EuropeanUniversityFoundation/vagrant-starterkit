@@ -16,3 +16,6 @@ fi
 
 # Bash setup.
 if [[ ! -z ${BASH_SETUP} ]]; then source ${BASH_SETUP}; fi
+
+# Git setup.
+if [[ ! -z ${GIT_SETUP} ]]; then source ${GIT_SETUP}; fi
