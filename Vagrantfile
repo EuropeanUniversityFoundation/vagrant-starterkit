@@ -31,7 +31,11 @@ Vagrant.configure("2") do |config|
 
   # Tweaks to the default /vagrant synced folder.
   config.vm.synced_folder ".", "/vagrant", disabled: true
-  config.vm.synced_folder ".", "/home/vagrant/vagrant-root", type: "rsync"
+  # Unidirectional mounts at the start.
+  config.vm.synced_folder ".", "/home/vagrant/vagrant-root",
+    type: "rsync",
+    rsync__exclude: ".git/"
+    # 'rsync__args' breaks this setup - to be investigated.
 
   # Provisioning script.
   config.vm.provision :shell, path: "provision.sh"
