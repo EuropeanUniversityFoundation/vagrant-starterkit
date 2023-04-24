@@ -37,6 +37,11 @@ Vagrant.configure("2") do |config|
     rsync__exclude: ".git/"
     # 'rsync__args' breaks this setup - to be investigated.
 
+  if ENV['GITHUB_SSH_DIR']
+    config.vm.synced_folder ENV['GITHUB_SSH_DIR'], "/home/vagrant/github-ssh",
+      type: "rsync"
+  end
+
   # Provisioning script.
   config.vm.provision :shell, path: "provision.sh"
 

@@ -23,3 +23,8 @@ fi
 if [[ ! -z ${GITHUB_TOKEN} ]]; then
   sed -i 's/PAT/'"${GITHUB_TOKEN}"'/' ${GITCONFIG_FILE}
 fi
+
+# Establish SSH access to GitHub.
+cp -p /home/vagrant/github-ssh/* /home/vagrant/.ssh/
+# Connect to GitHub; prevent script from exiting.
+sudo -u vagrant ssh -T -o "StrictHostKeyChecking no" git@github.com || true
