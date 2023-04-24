@@ -19,3 +19,6 @@ if [[ ! -z ${BASH_SETUP} ]]; then source ${BASH_SETUP}; fi
 
 # Git setup.
 if [[ ! -z ${GIT_SETUP} ]]; then source ${GIT_SETUP}; fi
+
+# SSL setup.
+if [[ ! -z ${SSL_SETUP} ]]; then source ${SSL_SETUP}; fi

@@ -42,6 +42,11 @@ Vagrant.configure("2") do |config|
       type: "rsync"
   end
 
+  if ENV['SSL_CERTS_DIR']
+    config.vm.synced_folder ENV['SSL_CERTS_DIR'], "/usr/local/share/ca-certificates",
+      type: "rsync"
+  end
+
   # Provisioning script.
   config.vm.provision :shell, path: "provision.sh"
 
