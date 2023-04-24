@@ -1,7 +1,0 @@
-[user]
-	name = "John Doe"
-	email = john.doe@example.com
-
-[github]
-	username = jdoe
-	token = PAT
