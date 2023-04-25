@@ -23,3 +23,6 @@ if [[ ! -z ${GIT_SETUP} ]]; then source ${GIT_SETUP}; fi
 
 # SSL setup.
 if [[ ! -z ${SSL_SETUP} ]]; then source ${SSL_SETUP}; fi
+
+# Apache2 setup.
+if [[ ! -z ${APACHE2_SETUP} ]]; then source ${APACHE2_SETUP}; fi
