@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Provisioning script.
 
 # Preliminary steps.
 apt-get update

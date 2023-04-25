@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # SSL setup script.
 
 if [[ ! -z ${SSL_CERTS_DIR} ]]; then

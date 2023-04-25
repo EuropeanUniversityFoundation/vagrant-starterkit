@@ -1,4 +1,5 @@
-# git setup script.
+#!/usr/bin/env bash
+# Git setup script.
 
 # Install git in the system.
 apt-get install git -y

@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 # Bash setup script.
 
 # Change shell prompt colors to avoid confusion.
