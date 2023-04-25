@@ -26,3 +26,6 @@ if [[ ! -z ${SSL_SETUP} ]]; then source ${SSL_SETUP}; fi
 
 # Apache2 setup.
 if [[ ! -z ${APACHE2_SETUP} ]]; then source ${APACHE2_SETUP}; fi
+
+# Nginx setup.
+if [[ ! -z ${NGINX_SETUP} ]]; then source ${NGINX_SETUP}; fi
