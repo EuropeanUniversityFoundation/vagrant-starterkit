@@ -31,20 +31,37 @@ Vagrant.configure("2") do |config|
 
   # Tweaks to the default /vagrant synced folder.
   config.vm.synced_folder ".", "/vagrant", disabled: true
-  # Unidirectional mounts at the start.
-  config.vm.synced_folder ".", "/home/vagrant/vagrant-root",
+
+  # Unidirectional mounts from host to guest.
+  config.vm.synced_folder ".",
+    ENV['STARTERKIT_ROOT'],
     type: "rsync",
     rsync__exclude: ".git/"
     # 'rsync__args' breaks this setup - to be investigated.
 
   if ENV['GITHUB_SSH_DIR']
-    config.vm.synced_folder ENV['GITHUB_SSH_DIR'], "/home/vagrant/github-ssh",
+    config.vm.synced_folder ENV['GITHUB_SSH_DIR'],
+      "/home/vagrant/github-ssh",
       type: "rsync"
   end
 
   if ENV['SSL_CERTS_DIR']
-    config.vm.synced_folder ENV['SSL_CERTS_DIR'], "/usr/local/share/ca-certificates",
+    config.vm.synced_folder ENV['SSL_CERTS_DIR'],
+      "/usr/local/share/ca-certificates",
       type: "rsync"
+  end
+
+  # Bidirectional mounts between host and guest.
+  if ENV['CONFIG_DIR']
+    config.vm.synced_folder ENV['CONFIG_DIR'],
+      ENV['CONFIG_MNT'] || "/home/vagrant/conf",
+      type: "nfs"
+  end
+
+  if ENV['VHOSTS_DIR']
+    config.vm.synced_folder ENV['VHOSTS_DIR'],
+      ENV['VHOSTS_MNT'] || "/var/www/vhosts",
+      type: "nfs"
   end
 
   # Provisioning script.

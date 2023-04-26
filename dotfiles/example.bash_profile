@@ -4,6 +4,6 @@ if [ -f "$HOME/.bashrc" ]; then
 fi
 
 # Add scripts directory to executable path.
-if [ -d VAGRANT_ROOT ]; then
-  PATH=VAGRANT_ROOT/scripts:$PATH
+if [ -d STARTERKIT_ROOT ]; then
+  PATH=STARTERKIT_ROOT/scripts:$PATH
 fi
