@@ -29,3 +29,6 @@ if [[ ! -z ${APACHE2_SETUP} ]]; then source ${APACHE2_SETUP}; fi
 
 # Nginx setup.
 if [[ ! -z ${NGINX_SETUP} ]]; then source ${NGINX_SETUP}; fi
+
+# MySQL setup.
+if [[ ! -z ${MYSQL_SETUP} ]]; then source ${MYSQL_SETUP}; fi

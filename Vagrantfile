@@ -64,6 +64,12 @@ Vagrant.configure("2") do |config|
       type: "nfs"
   end
 
+  if ENV['MYSQL_DATA_DIR']
+    config.vm.synced_folder ENV['MYSQL_DATA_DIR'],
+      ENV['MYSQL_DATA_MNT'] || "/data/mysql",
+      type: "nfs"
+  end
+
   # Provisioning script.
   config.vm.provision :shell, path: "provision.sh"
 
