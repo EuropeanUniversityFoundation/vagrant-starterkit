@@ -15,6 +15,30 @@ else
   exit 1
 fi
 
+# Ensure the additional disk is partitioned.
+if [[ -z $( lsblk | grep vdb1 ) ]]; then
+  echo "/dev/vdb is not partitioned."
+
+  # See https://www.digitalocean.com/community/tutorials/how-to-partition-and-format-storage-devices-in-linux for details.
+  apt-get install parted -y
+  parted /dev/vdb mklabel gpt
+  parted -a opt /dev/vdb mkpart primary ext4 0% 100%
+  mkfs.ext4 -L datapartition /dev/vdb1
+
+  lsblk | grep vdb1
+fi
+
+# Ensure the additional disk is mounted at startup.
+if [[ -z $( grep datapartition /etc/fstab ) ]]; then
+  echo "/dev/vdb1 is not mounted at startup."
+
+  mkdir -p /mnt/data
+  mount -o defaults /dev/vdb1 /mnt/data
+  echo "LABEL=datapartition /mnt/data ext4 defaults 0 2" >> /etc/fstab
+
+  grep datapartition /etc/fstab
+fi
+
 # Bash setup.
 if [[ ! -z ${BASH_SETUP} ]]; then source ${BASH_SETUP}; fi
 
