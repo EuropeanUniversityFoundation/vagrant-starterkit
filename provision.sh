@@ -56,3 +56,6 @@ if [[ ! -z ${NGINX_SETUP} ]]; then source ${NGINX_SETUP}; fi
 
 # MySQL setup.
 if [[ ! -z ${MYSQL_SETUP} ]]; then source ${MYSQL_SETUP}; fi
+
+# PHP setup.
+if [[ ! -z ${PHP_SETUP} ]]; then source ${PHP_SETUP}; fi

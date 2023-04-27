@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Snippet: PHP modules available in OVH VPS.
+
+PHP_MODULES=( \
+bcmath \
+curl \
+dba \
+dom \
+enchant \
+fileinfo \
+gd \
+imagick \
+imap \
+intl \
+json \
+ldap \
+mbstring \
+mysqli \
+mysqlnd \
+odbc \
+opcache \
+pdo \
+pgsql \
+phar \
+posix \
+pspell \
+redis \
+soap \
+sqlite3 \
+sysvmsg \
+sysvsem \
+sysvshm \
+tidy \
+xmlreader \
+xmlrpc \
+xmlwriter \
+xsl \
+zip \
+)
