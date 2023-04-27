@@ -23,6 +23,5 @@ Additionally, the following **Vagrant** plugins are necessary:
     mkdir ../ssl      # SSL_CERTS_DIR
     mkdir ../conf     # CONFIG_DIR
     mkdir ../vhosts   # VHOSTS_DIR
-    mkdir ../.mysql   # MYSQL_DATA_DIR
 
 _Work in progress..._

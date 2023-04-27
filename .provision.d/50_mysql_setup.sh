@@ -4,24 +4,26 @@
 # Install MariaDB server.
 apt-get install mariadb-server -y
 
-if [[ ! -z ${MYSQL_DATA_DIR} ]]; then
-  # See https://stackoverflow.com/a/43398493 for more.
+if [[ ! -z ${DB_DATA} ]]; then
+  DB_DATA_PATH=/mnt/data/${DB_DATA}
 
-  # Set ownership of new directory to match existing one.
-  chown --reference=/var/lib/mysql ${MYSQL_DATA_MNT}
-
-  # Set permissions on new directory to match existing one.
-  chmod --reference=/var/lib/mysql ${MYSQL_DATA_MNT}
-
-  # Stop MySQL before copying over files.
+  # Stop MySQL before performing any operations.
   service mysql stop
 
-  # Copy all files in default directory, to new one, retaining perms (-p).
-  cp -rp /var/lib/mysql/* ${MYSQL_DATA_MNT}
+  if [[ ! -d ${DB_DATA_PATH} ]]; then
+    # See https://stackoverflow.com/a/43398493 for more.
+    mkdir ${DB_DATA_PATH}
+    # Set ownership of new directory to match existing one.
+    chown --reference=/var/lib/mysql ${DB_DATA_PATH}
+    # Set permissions on new directory to match existing one.
+    chmod --reference=/var/lib/mysql ${DB_DATA_PATH}
+    # Copy all files in default directory, to new one, retaining perms (-p).
+    cp -rp /var/lib/mysql/* ${DB_DATA_PATH}
+  fi
 
-  # Create a new config file.
-  echo "[mysqld]" >> /etc/mysql/conf.d/mysqld.cnf
-  echo "datadir=${MYSQL_DATA_MNT}"
+  MARIADB_CONF=/etc/mysql/mariadb.conf.d/50-server.cnf
+
+  sed -i 's,/var/lib/mysql,'"${DB_DATA_PATH}"',g' ${MARIADB_CONF}
 
   # Start MySQL back up.
   service mysql start
