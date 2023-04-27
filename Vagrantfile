@@ -20,10 +20,12 @@ Vagrant.configure("2") do |config|
     v.memory = ENV['LIBVIRT_MEMORY'].to_i || 2048
     v.cpus = ENV['LIBVIRT_CPUS'].to_i || 2
 
-    # Additional disk for persistent data.
-    v.storage :file, :device => 'vdb',
-      :size => '5G',
-      :allow_existing => true
+    # Additional disk for persistent data if needed.
+    if ENV['DB_DATA']
+      v.storage :file, :device => 'vdb',
+        :size => (ENV['VDB_DISK_SIZE'] || '5G'),
+        :allow_existing => true
+    end
   end
 
   # Hostname, same as Vagrant machine name.
