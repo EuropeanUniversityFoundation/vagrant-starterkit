@@ -20,24 +20,9 @@ HOSTNAME_F=$(hostname -f)
 if [[ -d ${SSL_CERTS}/${HOSTNAME_F} ]]; then
   # Nginx does not ship with a default SSL site configuration.
   NGINX_EXAMPLE_SSL=/etc/nginx/sites-available/default-ssl
-  cat > ${NGINX_EXAMPLE_SSL} << 'EOL'
-server {
-  listen 443 ssl default_server;
-  listen [::]:443 ssl default_server;
 
-  ssl_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;
-  ssl_certificate_key /etc/ssl/private/ssl-cert-snakeoil.key;
-
-  server_name _;
-
-  root /var/www/html/nginx;
-  index index.html index.htm index.nginx-debian.html;
-
-  location / {
-    try_files $uri $uri/ =404;
-  }
-}
-EOL
+  cp -p ${STARTERKIT_ROOT}/.provision.d/snippets/nginx_example_ssl \
+    ${NGINX_EXAMPLE_SSL}
 
   SSL_PEM=${SSL_CERTS}/${HOSTNAME_F}/${HOSTNAME_F}.pem
   SSL_KEY=${SSL_CERTS}/${HOSTNAME_F}/${HOSTNAME_F}.key
