@@ -51,3 +51,24 @@ fi
 
 php composer-setup.php --install-dir=/usr/local/bin --filename composer --quiet
 rm composer-setup.php
+
+sudo -u vagrant composer --version
+
+# Integration with web servers.
+if [[ ! -z ${APACHE2_SETUP} ]] || [[ ! -z ${NGINX_SETUP} ]]; then
+  for b in ${PHP_BINARIES[@]}
+  do
+    # Install FastCGI Process Manager.
+    apt-get install -y $b-fpm --no-install-recommends
+
+    if [[ ! -z ${APACHE2_SETUP} ]]; then
+      # Install Apache2 PHP module.
+      apt-get install -y libapache2-mod-$b --no-install-recommends
+
+      # Enable relevant modules and configuration.
+      a2enmod proxy_fcgi setenvif rewrite
+      a2enconf $b-fpm
+      service apache2 restart
+    fi
+  done
+fi
