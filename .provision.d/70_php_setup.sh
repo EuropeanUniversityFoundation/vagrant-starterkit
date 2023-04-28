@@ -39,19 +39,7 @@ done
 
 # Install Composer.
 # https://getcomposer.org/doc/faqs/how-to-install-composer-programmatically.md
-EXPECTED_CHECKSUM="$(php -r 'copy("https://composer.github.io/installer.sig", "php://stdout");')"
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-ACTUAL_CHECKSUM="$(php -r "echo hash_file('sha384', 'composer-setup.php');")"
-
-if [ "$EXPECTED_CHECKSUM" != "$ACTUAL_CHECKSUM" ]
-then
-    >&2 echo 'ERROR: Invalid installer checksum'
-    rm composer-setup.php
-fi
-
-php composer-setup.php --install-dir=/usr/local/bin --filename composer --quiet
-rm composer-setup.php
-
+source ${STARTERKIT_ROOT}/.provision.d/snippets/install_composer.sh
 sudo -u vagrant composer --version
 
 # Integration with web servers.
