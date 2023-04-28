@@ -14,6 +14,7 @@ imap \
 intl \
 ldap \
 mbstring \
+mysql \
 odbc \
 pgsql \
 pspell \

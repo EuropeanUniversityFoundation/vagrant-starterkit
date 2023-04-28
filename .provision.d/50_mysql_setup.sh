@@ -4,6 +4,14 @@
 # Install MariaDB server.
 apt-get install mariadb-server -y
 
+# Create a non-root admin account.
+mysql --user=root <<_EOF_
+  CREATE USER IF NOT EXISTS 'vagrant'@'localhost' IDENTIFIED BY 'vagrant';
+  GRANT ALL PRIVILEGES ON *.* TO 'vagrant'@'localhost' WITH GRANT OPTION;
+  FLUSH PRIVILEGES;
+_EOF_
+
+# Handle persistent data.
 if [[ ! -z ${DB_DATA} ]]; then
   DB_DATA_PATH=/mnt/data/${DB_DATA}
 
