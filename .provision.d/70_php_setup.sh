@@ -71,26 +71,11 @@ if [[ ! -z ${APACHE2_SETUP} ]] || [[ ! -z ${NGINX_SETUP} ]]; then
       wget ${ADMINER_THEME} -q -O ${ADMINER_ROOT}/adminer.css
     fi
 
-    ADMINER_INDEX=${ADMINER_ROOT}/index.php
-    ADMINER_URL=adminer.${HOSTNAME_F}
-
     # https://sourceforge.net/p/adminer/discussion/960418/thread/75537d20/#91a5
-    cat > ${ADMINER_INDEX} << 'EOL'
-<?php
-function adminer_object() {
+    cp -p ${STARTERKIT_ROOT}/.provision.d/snippets/adminer_noroot.php \
+      ${ADMINER_ROOT}/index.php
 
-    class AdminerNoRoot extends Adminer {
-
-        function login($login, $password) {
-            return ($login != 'root');
-        }
-
-    }
-
-    return new AdminerNoRoot;
-}
-include "./adminer.php";
-EOL
+    ADMINER_URL=adminer.${HOSTNAME_F}
 
     if [[ ! -z ${APACHE2_SETUP} ]]; then
       ADMINER_APACHE_HTTP=/etc/apache2/sites-available/adminer.conf
