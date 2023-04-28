@@ -19,6 +19,7 @@ fi
 # Install PHP CLI.
 for b in ${PHP_BINARIES[@]}
 do
+  echo "Installing $b CLI..."
   apt-get install -y $b-cli --no-install-recommends
 done
 
@@ -29,6 +30,7 @@ fi
 
 for b in ${PHP_BINARIES[@]}
 do
+  echo "Installing $b modules..."
   for m in ${PHP_MODULES[@]}
   do
     apt-get install -y $b-$m --no-install-recommends
@@ -45,10 +47,7 @@ if [ "$EXPECTED_CHECKSUM" != "$ACTUAL_CHECKSUM" ]
 then
     >&2 echo 'ERROR: Invalid installer checksum'
     rm composer-setup.php
-    exit 1
 fi
 
 php composer-setup.php --install-dir=/usr/local/bin --filename composer --quiet
-RESULT=$?
 rm composer-setup.php
-exit $RESULT
