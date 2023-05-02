@@ -59,3 +59,6 @@ if [[ ! -z ${MYSQL_SETUP} ]]; then source ${MYSQL_SETUP}; fi
 
 # PHP setup.
 if [[ ! -z ${PHP_SETUP} ]]; then source ${PHP_SETUP}; fi
+
+# NodeJS setup.
+if [[ ! -z ${NODE_SETUP} ]]; then source ${NODE_SETUP}; fi
