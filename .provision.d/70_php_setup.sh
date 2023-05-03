@@ -42,6 +42,11 @@ done
 source ${STARTERKIT_ROOT}/.provision.d/snippets/install_composer.sh
 sudo -u vagrant composer --version
 
+# Install Drush Launcher.
+# https://github.com/drush-ops/drush-launcher#installation---phar
+source ${STARTERKIT_ROOT}/.provision.d/snippets/install_drush_launcher.sh
+sudo -u vagrant drush --version
+
 # Integration with web servers.
 if [[ ! -z ${APACHE2_SETUP} ]] || [[ ! -z ${NGINX_SETUP} ]]; then
   for b in ${PHP_BINARIES[@]}
