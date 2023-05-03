@@ -39,9 +39,13 @@ if [[ -z $( grep datapartition /etc/fstab ) ]]; then
   grep datapartition /etc/fstab
 fi
 
+# Install Mailhog to prevent any outbound email traffic.
+# https://github.com/mailhog/MailHog#debian--ubuntu-go--v118
+source ${STARTERKIT_ROOT}/.provision.d/snippets/install_mailhog.sh
+
 # Bash setup.
 if [[ ! -z ${BASH_SETUP} ]]; then source ${BASH_SETUP}; fi
-
+exit 0
 # Git setup.
 if [[ ! -z ${GIT_SETUP} ]]; then source ${GIT_SETUP}; fi
 
