@@ -45,7 +45,7 @@ source ${STARTERKIT_ROOT}/.provision.d/snippets/install_mailhog.sh
 
 # Bash setup.
 if [[ ! -z ${BASH_SETUP} ]]; then source ${BASH_SETUP}; fi
-exit 0
+
 # Git setup.
 if [[ ! -z ${GIT_SETUP} ]]; then source ${GIT_SETUP}; fi
 

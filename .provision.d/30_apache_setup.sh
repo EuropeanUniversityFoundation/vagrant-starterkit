@@ -39,8 +39,9 @@ if [[ -d ${SSL_CERTS}/${HOSTNAME_F} ]]; then
   fi
 fi
 
-# Switch to alternative ports to prevent conflicts with Nginx.
+# Handle different web server configurations.
 if [[ ! -z ${NGINX_SETUP} ]]; then
+  # Switch to alternative ports to prevent conflicts with Nginx.
   APACHE_PORTS=/etc/apache2/ports.conf
 
   sed -i 's,80,'"${APACHE2_ALT_HTTP:-8080}"',g' ${APACHE_PORTS}
@@ -48,5 +49,19 @@ if [[ ! -z ${NGINX_SETUP} ]]; then
   sed -i 's,443,'"${APACHE2_ALT_HTTPS:-8443}"',g' ${APACHE_PORTS}
   sed -i 's,443,'"${APACHE2_ALT_HTTPS:-8443}"',g' ${APACHE_DEFAULT_SSL}
 
+  service apache2 restart
+else
+  # If Nginx is not installed, Apache must allow access to MailHog.
+  # https://gist.github.com/flocondetoile/1854ba0907e2c5073ea6d5406ca8d243#configure-apache-as-a-proxy
+  a2enmod vhost_alias proxy proxy_http proxy_wstunnel
+
+  MAILHOG_APACHE_HTTP=/etc/apache2/sites-available/mailhog.conf
+
+  cp -p ${STARTERKIT_ROOT}/.provision.d/snippets/mailhog.conf \
+    ${MAILHOG_APACHE_HTTP}
+
+  sed -i 's,mailhog.local,mailhog.'"${HOSTNAME_F}"',g' ${MAILHOG_APACHE_HTTP}
+
+  a2ensite mailhog.conf
   service apache2 restart
 fi
