@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+RAW=/tmp/lshosts_raw
+TMP=/tmp/lshosts
+
+IP=$(hostname -I | awk '{ print $2 }')
+FQDN=$(hostname -f)
+DNS=$(hostname -d)
+
+APACHE_ENABLED=/etc/apache2/sites-enabled
+
+if [[ -d ${APACHE_ENABLED} ]]; then
+  find ${APACHE_ENABLED} -type l -exec grep -w ServerName {} \; |\
+  awk '{ print $NF; {$1=$1};1 }' |\
+  grep ${DNS} >> ${RAW}
+fi
+
+NGINX_ENABLED=/etc/nginx/sites-enabled
+
+if [[ -d ${NGINX_ENABLED} ]]; then
+  find ${NGINX_ENABLED} -type l -exec grep server_name {} \; |\
+  awk '{ print $NF }' |\
+  sed 's/.$//' |\
+  grep ${DNS} >> ${RAW}
+fi
+
+uniq ${RAW} ${TMP}
+
+HITS=(${IP} ${FQDN})
+
+while IFS= read -r line
+do
+  HITS+=($line)
+done < ${TMP}
+
+echo "Add the following line to your /etc/hosts file:"
+echo ${HITS[@]} | sed 's/ /'$'\t''/'
