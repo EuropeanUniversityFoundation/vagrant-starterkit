@@ -17,13 +17,54 @@ cp -p ${STARTERKIT_ROOT}/.provision.d/snippets/adminer_noroot.php \
 
 ADMINER_URL=adminer.${HOSTNAME_F}
 
-if [[ ! -z ${APACHE2_SETUP} ]]; then
+# Handle different web server configurations.
+if [[ ! -z ${NGINX_SETUP} ]]; then
+
+  if [[ -d ${SSL_CERTS}/${HOSTNAME_F} ]]; then
+    SSL_PEM=${SSL_CERTS}/${HOSTNAME_F}/${HOSTNAME_F}.pem
+    SSL_KEY=${SSL_CERTS}/${HOSTNAME_F}/${HOSTNAME_F}.key
+
+    if [[ -f ${SSL_PEM} ]] && [[ -f ${SSL_KEY} ]]; then
+      # Adminer via SSL.
+      ADMINER_NGINX_CONF=/etc/nginx/sites-available/adminer-ssl
+
+      cp -p ${STARTERKIT_ROOT}/.provision.d/snippets/nginx_adminer_ssl \
+        ${ADMINER_NGINX_CONF}
+
+      sed -i 's,LOCAL,'"${HOSTNAME_F}"',g' ${ADMINER_NGINX_CONF}
+
+      # Replace the snakeoil certificate.
+      sed -i 's,'"${SNAKEOIL_PEM}"','"${SSL_PEM}"',g' ${ADMINER_NGINX_CONF}
+      sed -i 's,'"${SNAKEOIL_KEY}"','"${SSL_KEY}"',g' ${ADMINER_NGINX_CONF}
+
+      # Enable the site.
+      ln -s ${ADMINER_NGINX_CONF} /etc/nginx/sites-enabled
+    fi
+  fi
+
+  if [[ -z ${ADMINER_NGINX_CONF} ]]; then
+    # Adminer fallback without SSL.
+    ADMINER_NGINX_CONF=/etc/nginx/sites-available/adminer
+
+    cp -p ${STARTERKIT_ROOT}/.provision.d/snippets/nginx_adminer \
+      ${ADMINER_NGINX_CONF}
+
+    sed -i 's,LOCAL,'"${HOSTNAME_F}"',g' ${ADMINER_NGINX_CONF}
+
+    # Enable the site.
+    ln -s ${ADMINER_NGINX_CONF} /etc/nginx/sites-enabled
+  fi
+
+  service nginx reload
+
+else
+  # If Nginx is not installed, Apache must allow access to Adminer.
   ADMINER_APACHE_CONF=/etc/apache2/sites-available/adminer.conf
 
   cp -p ${STARTERKIT_ROOT}/.provision.d/snippets/adminer.conf \
     ${ADMINER_APACHE_CONF}
 
-  sed -i 's,.local,.'"${HOSTNAME_F}"',g' ${ADMINER_APACHE_CONF}
+  sed -i 's,LOCAL,'"${HOSTNAME_F}"',g' ${ADMINER_APACHE_CONF}
 
   if [[ -d ${SSL_CERTS}/${HOSTNAME_F} ]]; then
     SSL_PEM=${SSL_CERTS}/${HOSTNAME_F}/${HOSTNAME_F}.pem
@@ -34,13 +75,6 @@ if [[ ! -z ${APACHE2_SETUP} ]]; then
       sed -i 's,'"${SNAKEOIL_PEM}"','"${SSL_PEM}"',g' ${ADMINER_APACHE_CONF}
       sed -i 's,'"${SNAKEOIL_KEY}"','"${SSL_KEY}"',g' ${ADMINER_APACHE_CONF}
     fi
-  fi
-
-  # Handle different web server configurations.
-  if [[ ! -z ${NGINX_SETUP} ]]; then
-    # Switch to alternative ports to prevent conflicts with Nginx.
-    sed -i 's,80,'"${APACHE2_ALT_HTTP:-8080}"',g' ${ADMINER_APACHE_CONF}
-    sed -i 's,443,'"${APACHE2_ALT_HTTPS:-8443}"',g' ${ADMINER_APACHE_CONF}
   fi
 
   a2ensite adminer.conf

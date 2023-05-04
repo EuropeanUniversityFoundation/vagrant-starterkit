@@ -60,7 +60,7 @@ else
   cp -p ${STARTERKIT_ROOT}/.provision.d/snippets/mailhog.conf \
     ${MAILHOG_APACHE_CONF}
 
-  sed -i 's,.local,.'"${HOSTNAME_F}"',g' ${MAILHOG_APACHE_CONF}
+  sed -i 's,LOCAL,'"${HOSTNAME_F}"',g' ${MAILHOG_APACHE_CONF}
 
   if [[ -d ${SSL_CERTS}/${HOSTNAME_F} ]]; then
     SSL_PEM=${SSL_CERTS}/${HOSTNAME_F}/${HOSTNAME_F}.pem
