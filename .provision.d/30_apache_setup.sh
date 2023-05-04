@@ -21,15 +21,15 @@ service apache2 reload
 SSL_CERTS=/usr/local/share/ca-certificates
 HOSTNAME_F=$(hostname -f)
 
+SNAKEOIL_PEM=/etc/ssl/certs/ssl-cert-snakeoil.pem
+SNAKEOIL_KEY=/etc/ssl/private/ssl-cert-snakeoil.key
+
 if [[ -d ${SSL_CERTS}/${HOSTNAME_F} ]]; then
   SSL_PEM=${SSL_CERTS}/${HOSTNAME_F}/${HOSTNAME_F}.pem
   SSL_KEY=${SSL_CERTS}/${HOSTNAME_F}/${HOSTNAME_F}.key
 
   if [[ -f ${SSL_PEM} ]] && [[ -f ${SSL_KEY} ]]; then
     # Replace the snakeoil certificate.
-    SNAKEOIL_PEM=/etc/ssl/certs/ssl-cert-snakeoil.pem
-    SNAKEOIL_KEY=/etc/ssl/private/ssl-cert-snakeoil.key
-
     sed -i 's,'"${SNAKEOIL_PEM}"','"${SSL_PEM}"',g' ${APACHE_DEFAULT_SSL}
     sed -i 's,'"${SNAKEOIL_KEY}"','"${SSL_KEY}"',g' ${APACHE_DEFAULT_SSL}
 
@@ -39,11 +39,11 @@ if [[ -d ${SSL_CERTS}/${HOSTNAME_F} ]]; then
   fi
 fi
 
+APACHE_PORTS=/etc/apache2/ports.conf
+
 # Handle different web server configurations.
 if [[ ! -z ${NGINX_SETUP} ]]; then
   # Switch to alternative ports to prevent conflicts with Nginx.
-  APACHE_PORTS=/etc/apache2/ports.conf
-
   sed -i 's,80,'"${APACHE2_ALT_HTTP:-8080}"',g' ${APACHE_PORTS}
   sed -i 's,80,'"${APACHE2_ALT_HTTP:-8080}"',g' ${APACHE_DEFAULT}
   sed -i 's,443,'"${APACHE2_ALT_HTTPS:-8443}"',g' ${APACHE_PORTS}
@@ -55,12 +55,23 @@ else
   # https://gist.github.com/flocondetoile/1854ba0907e2c5073ea6d5406ca8d243#configure-apache-as-a-proxy
   a2enmod vhost_alias proxy proxy_http proxy_wstunnel
 
-  MAILHOG_APACHE_HTTP=/etc/apache2/sites-available/mailhog.conf
+  MAILHOG_APACHE_CONF=/etc/apache2/sites-available/mailhog.conf
 
   cp -p ${STARTERKIT_ROOT}/.provision.d/snippets/mailhog.conf \
-    ${MAILHOG_APACHE_HTTP}
+    ${MAILHOG_APACHE_CONF}
 
-  sed -i 's,mailhog.local,mailhog.'"${HOSTNAME_F}"',g' ${MAILHOG_APACHE_HTTP}
+  sed -i 's,.local,.'"${HOSTNAME_F}"',g' ${MAILHOG_APACHE_CONF}
+
+  if [[ -d ${SSL_CERTS}/${HOSTNAME_F} ]]; then
+    SSL_PEM=${SSL_CERTS}/${HOSTNAME_F}/${HOSTNAME_F}.pem
+    SSL_KEY=${SSL_CERTS}/${HOSTNAME_F}/${HOSTNAME_F}.key
+
+    if [[ -f ${SSL_PEM} ]] && [[ -f ${SSL_KEY} ]]; then
+      # Replace the snakeoil certificate.
+      sed -i 's,'"${SNAKEOIL_PEM}"','"${SSL_PEM}"',g' ${MAILHOG_APACHE_CONF}
+      sed -i 's,'"${SNAKEOIL_KEY}"','"${SSL_KEY}"',g' ${MAILHOG_APACHE_CONF}
+    fi
+  fi
 
   a2ensite mailhog.conf
   service apache2 restart

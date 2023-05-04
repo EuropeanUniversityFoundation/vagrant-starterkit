@@ -66,36 +66,6 @@ if [[ ! -z ${APACHE2_SETUP} ]] || [[ ! -z ${NGINX_SETUP} ]]; then
   done
 
   if [[ ! -z ${MYSQL_SETUP} ]]; then
-    # Download latest Adminer.
-    ADMINER_ROOT=/usr/share/adminer
-    mkdir -p ${ADMINER_ROOT}
-    wget https://www.adminer.org/latest.php -q -O ${ADMINER_ROOT}/adminer.php
-
-    # Tweaks to Adminer.
-    if [[ ! -z ${ADMINER_THEME} ]]; then
-      wget ${ADMINER_THEME} -q -O ${ADMINER_ROOT}/adminer.css
-    fi
-
-    # https://sourceforge.net/p/adminer/discussion/960418/thread/75537d20/#91a5
-    cp -p ${STARTERKIT_ROOT}/.provision.d/snippets/adminer_noroot.php \
-      ${ADMINER_ROOT}/index.php
-
-    ADMINER_URL=adminer.${HOSTNAME_F}
-
-    if [[ ! -z ${APACHE2_SETUP} ]]; then
-      ADMINER_APACHE_HTTP=/etc/apache2/sites-available/adminer.conf
-
-      cp ${APACHE_DEFAULT} ${ADMINER_APACHE_HTTP}
-
-      NAME_OLD="#ServerName www.example.com"
-      NAME_NEW="ServerName ${ADMINER_URL}"
-      sed -i 's,'"${NAME_OLD}"','"${NAME_NEW}"',g' ${ADMINER_APACHE_HTTP}
-
-      PATH_OLD="/var/www/html/apache2"
-      sed -i 's,'"${PATH_OLD}"','"${ADMINER_ROOT}"',g' ${ADMINER_APACHE_HTTP}
-
-      a2ensite adminer.conf
-      service apache2 reload
-    fi
+    source ${STARTERKIT_ROOT}/.provision.d/snippets/install_adminer.sh
   fi
 fi
