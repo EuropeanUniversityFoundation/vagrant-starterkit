@@ -3,9 +3,10 @@
 
 # Change shell prompt colors to avoid confusion.
 sed -i.bak 's/32m/36m/' .bashrc
+sed -i.bak 's/31m/36m/' /root/.bashrc
 
 # Install CLI utilities.
-apt-get install htop tree -y
+apt-get install htop locales-all tree -y
 
 # Add '.bash_aliases' to the $HOME directory.
 cp -p ${STARTERKIT_ROOT}/dotfiles/example.bash_aliases \
